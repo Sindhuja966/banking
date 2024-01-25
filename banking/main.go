@@ -1,13 +1,12 @@
 package main
 
-import "testmod/app"
-
-//import "github.com/Sindhuja966/banking.git/app"
+import (
+	"github.com/Sindhuja966/banking/app"
+	"github.com/Sindhuja966/banking/logger"
+)
 
 func main() {
 
+	logger.Info("Starting out application")
 	app.Start()
 }
-
-//xml.NewEncoder(w).Encode(customers)
-//json.NewEncoder(w).Encode(customers)
