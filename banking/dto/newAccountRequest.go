@@ -1,23 +1,22 @@
 package dto
 
 import (
-	"strings"
-
 	"github.com/Sindhuja966/banking/errs"
 )
 
-type NewAccountRequest struct {
-	CustomerId  string  `json:"customer_id"`
-	AccountType string  `json:"account_type"`
-	Amount      float64 `json:"amount"`
+type NewCustomerRequest struct {
+	Id          string
+	Name        string
+	DateofBirth string
+	City        string
+	Zipcode     string
+	Status      string
 }
 
-func (r NewAccountRequest) Validate() *errs.AppError {
-	if r.Amount < 5000 {
-		return errs.NewValidationError("To open a new account you need to deposit atleast 5000.00")
+func (r NewCustomerRequest) Validate() *errs.AppError {
+	if r.Zipcode < "6000" {
+		return errs.NewValidationError("To open a new customer you need to have a crct zipcode ")
 	}
-	if strings.ToLower(r.AccountType) != "saving" && strings.ToLower(r.AccountType) != "checking" {
-		return errs.NewValidationError("Account type should be checking or saving")
-	}
+
 	return nil
 }
