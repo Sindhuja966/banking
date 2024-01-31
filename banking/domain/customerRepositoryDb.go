@@ -15,22 +15,33 @@ type CustomerRepositoryDb struct {
 
 func (d CustomerRepositoryDb) FindAll(status string) ([]Customer, *errs.AppError) {
 	customers := make([]Customer, 0)
-	findAllsql := "select customer_id,name,city,zipcode,date_of_birth,status from customers"
-	rows, err := d.client.Query(findAllsql)
+	query := "select customer_id,name,city,zipcode,date_of_birth,status from customers"
+
+	var rows *sql.Rows
+	var err error
+
+	if status != "" {
+		query += " WHERE status = $1"
+		rows, err = d.client.Query(query, status)
+	} else {
+		rows, err = d.client.Query(query)
+	}
+
 	if err != nil {
-		log.Println("Error while querying customer table" + err.Error())
+		log.Println("Error while querying customers table: " + err.Error())
 		return customers, nil
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		var c Customer
-		err := rows.Scan(&c.Id, &c.Name, &c.City, &c.Zipcode, &c.DateofBirth, &c.Status)
-		if err != nil {
-			log.Println("Error while scanning customer table" + err.Error())
+		if err := rows.Scan(&c.Id, &c.Name, &c.City, &c.Zipcode, &c.DateofBirth, &c.Status); err != nil {
+			log.Println("Error while scanning customers: " + err.Error())
 			return customers, nil
 		}
 		customers = append(customers, c)
 	}
+
 	return customers, nil
 }
 
